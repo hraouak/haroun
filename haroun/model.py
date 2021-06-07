@@ -82,6 +82,23 @@ class Model():
 
         print("\nTrain finished successfully :)")
 
+    def evaluate(self, test_data):
+        test_inputs, test_outputs = test_data
+        self.net.load_state_dict(self.state_dict)
+        predictions = self.net(test_inputs).cpu().detach().numpy()
+        
+        correct = 0
+        wrong = 0
+        for i,(j,k) in enumerate(zip(predictions, test_outputs.cpu().detach())):
+          if np.argmax(j) == np.argmax(k):
+            correct +=1
+          else:
+            wrong += 1
+        
+        score = 100 * correct / test_outputs.shape[0]
+        print(f'\nTest accuracy:{score:.3g}%')
+        print(f'Correct predictions: {correct}, Wrong predictions: {wrong}')
+
     def save(self, path, checkpoint_name):
         torch.save(self.state_dict, f"{path}/{checkpoint_name}.pth")
         print("\nCheckpoint saved successfully :)")
