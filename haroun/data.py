@@ -46,22 +46,23 @@ class Data():
 
     def dataset(self, split_size, shuffle, random_state, images_format,
                 labels_format, permute, device):
-        
+
+        if len(self.images.shape)==3:
+            self.images = np.expand_dims(self.images, axis=3)
+
+        elif len(self.images.shape)==4:
+            pass
+
         x_train, x_val, y_train, y_val = train_test_split(self.images,
                                                           self.labels,
-                                                          test_size=split_size, 
-                                                          shuffle=shuffle, 
+                                                          test_size=split_size,
+                                                          shuffle=shuffle,
                                                           random_state=random_state)
 
         x_test, x_val, y_test, y_val = train_test_split(x_val, y_val,
                                                         test_size=0.5,
                                                         shuffle=shuffle,
                                                         random_state=random_state)
-
-        # Verify datasets shapes
-        print(f"Train data shape: {x_train.shape}, {y_train.shape}")
-        print(f"Test data shape: {x_test.shape}, {y_test.shape}")
-        print(f"Validation data shape: {x_val.shape}, {y_val.shape}")
 
         # Free memory
         del self.images, self.labels
@@ -72,7 +73,7 @@ class Data():
         del x_train, y_train
 
         self.val_inputs = torch.from_numpy(x_val).to(images_format).to(device)
-        self.val_outputs = torch.from_numpy(y_val).to(labels_format).to(device)  
+        self.val_outputs = torch.from_numpy(y_val).to(labels_format).to(device)
         del x_val, y_val
 
         self.test_inputs = torch.from_numpy(x_test).to(images_format).to(device)
@@ -83,5 +84,10 @@ class Data():
             self.train_inputs = self.train_inputs.permute(0, 3, 1, 2)
             self.val_inputs = self.val_inputs.permute(0, 3, 1, 2)
             self.test_inputs = self.test_inputs.permute(0, 3, 1, 2)
+
+        # Verify datasets shapes
+        print(f"Train tensor shape: {self.train_inputs.shape}, {self.train_outputs.shape}")
+        print(f"Test tensor shape: {self.test_inputs.shape}, {self.test_outputs.shape}")
+        print(f"Validation tensor shape: {self.val_inputs.shape}, {self.val_outputs.shape}")
 
         print("\nDataset generated successfully :)")
