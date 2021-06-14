@@ -22,8 +22,8 @@ def augmentation(images, labels, flip_y, flip_x, brightness):
         # Concatenate arrays
         images = np.concatenate([images, flipped_y_images])
         labels = np.concatenate([labels, flipped_y_labels])
-    
-    elif flip_x:
+
+    if flip_x:
         # Data augmentation (flip_horizontal)
         flipped_x_images, flipped_x_labels = flip(images, labels, axis=1)
 
@@ -31,7 +31,7 @@ def augmentation(images, labels, flip_y, flip_x, brightness):
         images = np.concatenate([images, flipped_x_images])
         labels = np.concatenate([labels, flipped_x_labels])
 
-    elif brightness:
+    if brightness:
         darken_images, darken_labels = brightness(images, labels, gamma=1.5)
         brighten_images, brighten_labels = brightness(images, labels, gamma=0.5)
 

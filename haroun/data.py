@@ -10,14 +10,15 @@ class Data():
         super(Data, self).__init__()
         self.images, self.labels = loader
         self.classes = classes
+        self.shape = (self.images.shape, self.labels.shape)
         if self.classes is not None:
             self.encode()
         else:
             pass
 
     def shape(self):
-        print(f"Images shape: {self.images.shape}",
-              f"Labels shape: {self.labels.shape}")
+        print(f"Images shape: {self.shape[0]}",
+              f"Labels shape: {self.shape[1]}\n")
 
     def encode(self):
         total = len(self.classes)
@@ -34,7 +35,10 @@ class Data():
         f, axis = plt.subplots(nrows=2, ncols=2, constrained_layout=True)
         for i, ax in enumerate(axis.flat):
             rand = random.randint(0, self.images.shape[0] - 1)
-            ax.imshow(self.images[rand])
+            if len(self.shape[0])==3:
+                ax.imshow(self.images[rand])
+            elif len(self.shape[0])==2 :
+                ax.imshow(self.images[rand], cmap="gray")
 
             if self.classes is not None: 
                 title = f"target: {self.decode(self.labels[rand])}"

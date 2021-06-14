@@ -12,9 +12,12 @@ class Model():
         self.optim = optimizer
         self.loss = criterion
         self.device = device
+
         print("Model initialized succssefully :)\n")
 
-    def train(self, train_data, val_data, epochs, patience, batch_size):
+    def train(self, train_data, val_data, epochs, patience, batch_size, learning_rate):
+        if self.optim == "adam":
+            self.optim = torch.optim.Adam(self.net.parameters(), lr=learning_rate)
         best_loss = np.inf
         self.patience = patience
         self.train_losses = []
@@ -35,7 +38,7 @@ class Model():
             train_permutation = torch.randperm(total_train)
             val_permutation = torch.randperm(total_val)
 
-            for i in range(0,total_train, batch_size):
+            for i in range(0, total_train, batch_size):
                 self.optim.zero_grad()
                 indices = train_permutation[i:i+batch_size]
                 batch_x, batch_y = train_inputs[indices], train_outputs[indices]
