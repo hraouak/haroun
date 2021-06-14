@@ -26,8 +26,8 @@ class Model():
         total_val = val_inputs.size()[0]
         print("Train loop:\n")
 
+        t0 = time.time()
         for epoch in range(epochs):
-            t0 = time.time()
             self.net.train()
             train_loss = 0
             val_loss = 0
@@ -56,14 +56,12 @@ class Model():
                 val_loss += loss
             val_loss = val_loss.cpu().detach() / total_val
             self.val_losses.append(val_loss)
-            tf = time.time()
 
             if val_loss < best_loss:
                 best_loss = val_loss
                 cost_patience = patience
                 self.state_dict = copy.deepcopy(self.net.state_dict())
                 print(f"\tEpoch: {epoch+1}/{epochs}, ",
-                      f"Epoch duration: {tf-t0:.3g}s, ",
                       f"Train Loss: {train_loss:.3g}, ",
                       f"Val Loss: {val_loss:.3g}")
 
@@ -75,26 +73,25 @@ class Model():
 
                 else:
                     print(f"\tEpoch: {epoch+1}/{epochs}, ",
-                          f"Epoch duration: {tf-t0:.3g}s, ", 
-                          f"Train Loss: {train_loss:.3g}, ", 
+                          f"Train Loss: {train_loss:.3g}, ",
                           f"Val Loss: {val_loss:.3g} - No improvement",
                           f"-> Remaining patience: {cost_patience}")
 
-        print("\nTrain finished successfully :)")
+        tf = time.time()
+        print(f"\nTrain finished successfully in {tf-t0:.3g}s")
 
     def evaluate(self, test_data):
         test_inputs, test_outputs = test_data
         self.net.load_state_dict(self.state_dict)
         predictions = self.net(test_inputs).cpu().detach().numpy()
-        
         correct = 0
         wrong = 0
         for i,(j,k) in enumerate(zip(predictions, test_outputs.cpu().detach())):
-          if np.argmax(j) == np.argmax(k):
-            correct +=1
-          else:
-            wrong += 1
-        
+            if np.argmax(j) == np.argmax(k):
+                correct +=1
+            else:
+                wrong += 1
+
         score = 100 * correct / test_outputs.shape[0]
         print(f'\nTest accuracy:{score:.3g}%')
         print(f'Correct predictions: {correct}, Wrong predictions: {wrong}')
