@@ -12,7 +12,6 @@ class Model():
         self.optim = optimizer
         self.loss = criterion
         self.device = device
-
         print("Model initialized succssefully :)\n")
 
     def train(self, train_data, val_data, epochs, patience, batch_size, learning_rate):

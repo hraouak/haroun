@@ -11,10 +11,19 @@ class Data():
         self.images, self.labels = loader
         self.classes = classes
         self.shape = (self.images.shape, self.labels.shape)
-        if self.classes is not None:
-            self.encode()
-        else:
-            pass
+
+    def stat(self):
+        keys = self.classes.keys()
+        stat = {}
+        for key in keys:
+            n = 0
+            for label in self.labels:
+                if label == key:
+                    n += 1
+                else:
+                    pass
+            stat[key] = n
+        print(stat)
 
     def shape(self):
         print(f"Images shape: {self.shape[0]}",
