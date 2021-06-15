@@ -10,7 +10,7 @@ class Data():
         super(Data, self).__init__()
         self.images, self.labels = loader
         self.classes = classes
-        self.shape = (self.images.shape, self.labels.shape)
+        self.shapes = (self.images.shape, self.labels.shape)
 
     def stat(self):
         keys = self.classes.keys()
@@ -26,8 +26,8 @@ class Data():
         print(stat)
 
     def shape(self):
-        print(f"Images shape: {self.shape[0]}",
-              f"Labels shape: {self.shape[1]}\n")
+        print(f"Images shape: {self.shapes[0]}",
+              f"Labels shape: {self.shapes[1]}\n")
 
     def encode(self):
         total = len(self.classes)
@@ -44,9 +44,9 @@ class Data():
         f, axis = plt.subplots(nrows=2, ncols=2, constrained_layout=True)
         for i, ax in enumerate(axis.flat):
             rand = random.randint(0, self.images.shape[0] - 1)
-            if len(self.shape[0])==3:
+            if len(self.shapes[0])==3:
                 ax.imshow(self.images[rand])
-            elif len(self.shape[0])==2 :
+            elif len(self.shapes[0])==2 :
                 ax.imshow(self.images[rand], cmap="gray")
 
             if self.classes is not None: 
@@ -58,14 +58,19 @@ class Data():
         plt.show()
 
     def dataset(self, split_size, shuffle, random_state, images_format,
-                labels_format, permute, device):
+                labels_format, permute, one_hot, device):
 
-        if len(self.images.shape)==3:
+        if len(self.shape[0])==3:
             self.images = np.expand_dims(self.images, axis=3)
 
-        elif len(self.images.shape)==4:
+        elif len(self.shapes[0])==4:
             pass
 
+        if one_hot:
+            self.encode()
+        else:
+            pass
+            
         x_train, x_val, y_train, y_val = train_test_split(self.images,
                                                           self.labels,
                                                           test_size=split_size,
