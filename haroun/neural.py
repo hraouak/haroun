@@ -72,17 +72,18 @@ def dense_layers(input, output, div):
 
 
 class Network(torch.nn.Module):
-    def __init__(self, downward, output, div, activation):
+    def __init__(self, shape, downward, output, div, activation):
         super(Network, self).__init__()
-        self.downward = downward
-        self.output = output
-        self.div = div
+        self.downward = downward_layers(downward)
+        total = len(downward) - 1
+        input = int(downward[-1] * (shape[0] / (2 ** total)) * (shape[1] / (2 ** total)))
+        self.dense = dense_layers(input, output, div)
         self.activation = activation
 
     def forward(self, X: torch.Tensor) -> torch.Tensor:
-        X = downward_layers(self.downward)(X)
+        X = self.downward(X)
         X = X.reshape(X.size(0), -1)
-        X = dense_layers(X.size(1), self.output, self.div)(X)
+        X = self.dense(X)
         if self.activation == "softmax":
             X = torch.nn.functional.softmax(X, dim=0)
         elif self.activation == "elu":
