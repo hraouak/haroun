@@ -24,7 +24,9 @@ class Data():
                 else:
                     pass
             stat[key] = n
-        print(stat)
+        plt.figure(figsize=(4, 4))
+        plt.pie(stat.values(), labels=stat.keys(), normalize=True)
+        plt.show()
 
     def shape(self):
         print(f"Images shape: {self.shapes[0]}",
