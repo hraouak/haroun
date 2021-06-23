@@ -45,7 +45,7 @@ def downward_layers(channels):
     for feature in features:
         inp, out = feature
         layers.append(ConvPool(in_features=inp, out_features=out))
-    # layers = torch.nn.Sequential(*layers)
+    layers = torch.nn.Sequential(*layers)
     return layers
 
 
