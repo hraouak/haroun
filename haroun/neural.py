@@ -36,7 +36,7 @@ class Conv(torch.nn.Module):
 
 
 def downward_layers(channels):
-    layers = torch.nn.ModuleList()
+    layers = []
     layers.append(torch.nn.BatchNorm2d(channels[0], affine=False))
     input_channels = channels[:-1]
     output_channels = channels[1:]
@@ -51,7 +51,7 @@ def downward_layers(channels):
 
 def dense_layers(input, output, div):
     channels = []
-    layers = torch.nn.ModuleList()
+    layers = []
     while input > output:
         channels.append(input)
         input = input // div
@@ -67,7 +67,7 @@ def dense_layers(input, output, div):
             layers.append(torch.nn.BatchNorm1d(outp))
         else:
             pass
-    # layers = torch.nn.Sequential(*layers)
+    layers = torch.nn.Sequential(*layers)
     return layers
 
 
